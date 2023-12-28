@@ -7,7 +7,7 @@ const app = express();
 
 // Use cors middleware
 app.use(cors({
-    origin: '*',
+    origin: 'https://phi-react-website.web.app/',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,

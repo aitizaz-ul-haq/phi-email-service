@@ -219,6 +219,80 @@ app.delete('/cases/:id', async (req, res) => {
     }
 });
 
+app.post('/jobs', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('jobs');
+        const job = req.body;
+        await collection.insertOne(job);
+        res.status(201).send('Job created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+app.get('/jobs', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('jobs');
+        const jobs = await collection.find({}).toArray();
+        res.status(200).json(jobs);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+app.get('/jobs/:jobId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('jobs');
+        const { jobId } = req.params;
+        const job = await collection.findOne({ _id: new ObjectId(jobId) });
+
+        if (!job) {
+            return res.status(404).send('Job not found');
+        }
+
+        res.status(200).json(job);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+
+app.put('/jobs/:jobId', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('jobs');
+        const { jobId } = req.params;
+        const job = req.body;
+        await collection.updateOne({ _id: new ObjectId(jobId) }, { $set: job });
+        res.status(200).send('Job updated successfully');
+    } finally {
+        await client.close();
+    }
+});
+
+
+app.delete('/jobs/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('jobs');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('Job deleted successfully');
+    } finally {
+        await client.close();
+    }
+});
+
+
 // Server setup
 const port = 3000;
 app.listen(port, () => {

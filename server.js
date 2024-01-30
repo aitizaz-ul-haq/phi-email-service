@@ -70,6 +70,27 @@ app.post('/send-email', (req, res) => {
     });
 });
 
+// Login endpoint
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const db = client.db(dbName);
+   
+    const user = await db.collection('users').findOne({ username });
+
+    if (!user || user.password !== password) {
+        return res.status(401).send('Invalid credentials');
+    }
+
+    // Here you should create a token and send it back
+    res.status(200).send({ token: 'your-generated-token' });
+});
+
+
+
+// const newUser = { username: "admin", password: "admin" }; // Use hashed passwords in production
+// db.collection('users').insertOne(newUser);
+
+
 // Blog CRUD Operations
 app.get('/blogs', async (req, res) => {
     try {

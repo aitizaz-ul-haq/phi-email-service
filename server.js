@@ -242,6 +242,81 @@ app.delete('/fintech/:id', async (req, res) => {
     }
 });
 
+// GET all fintechinfo entries
+app.get('/fintechinfo', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('fintechinfo');
+        const fintechinfoEntries = await collection.find({}).toArray();
+        res.status(200).json(fintechinfoEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// POST a new fintechinfo entry
+app.post('/fintechinfo', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('fintechinfo');
+        const fintechinfoEntry = req.body;
+        await collection.insertOne(fintechinfoEntry);
+        res.status(201).send('Fintechinfo entry created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// GET a single fintechinfo entry by ID
+app.get('/fintechinfo/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('fintechinfo');
+        const { id } = req.params;
+        const fintechinfoEntry = await collection.findOne({ _id: new ObjectId(id) });
+
+        if (!fintechinfoEntry) {
+            return res.status(404).send('Fintechinfo entry not found');
+        }
+
+        res.status(200).json(fintechinfoEntry);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// PUT (update) a fintechinfo entry by ID
+app.put('/fintechinfo/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('fintechinfo');
+        const { id } = req.params;
+        const fintechinfoEntry = req.body;
+        await collection.updateOne({ _id: new ObjectId(id) }, { $set: fintechinfoEntry });
+        res.status(200).send('Fintechinfo entry updated successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// DELETE a fintechinfo entry by ID
+app.delete('/fintechinfo/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('fintechinfo');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('Fintechinfo entry deleted successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
 
 // Get all articles
 app.get('/cases', async (req, res) => {

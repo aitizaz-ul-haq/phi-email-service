@@ -213,14 +213,14 @@ app.get('/fintech/:fintechId', async (req, res) => {
 });
 
 // PUT (update) a fintech entry by ID
-app.put('/fintech/:fintechId', async (req, res) => {
+app.put('/fintech/:finId', async (req, res) => {
     try {
         await client.connect();
         const db = client.db(dbName);
         const collection = db.collection('fintech');
-        const { fintechId } = req.params;
+        const { finId } = req.params;
         const fintechEntry = req.body;
-        await collection.updateOne({ _id: new ObjectId(fintechId) }, { $set: fintechEntry });
+        await collection.updateOne({ _id: new ObjectId(finId) }, { $set: fintechEntry });
         res.status(200).send('Fintech entry updated successfully');
     } finally {
         await client.close();

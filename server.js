@@ -783,6 +783,85 @@ app.delete('/cloudinfo/:id', async (req, res) => {
     }
 });
 
+
+// GET all iot entries
+app.get('/iaasinfo', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('iaasinfo');
+        const iotEntries = await collection.find({}).toArray();
+        res.status(200).json(iotEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// POST a new iot entry
+app.post('/iaasinfo', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('iaasinfo');
+        const iotEntry = req.body;
+        await collection.insertOne(iotEntry);
+        res.status(201).send('iaasinfo entry created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// GET a single iot entry by ID
+app.get('/iaasinfo/:iaasinfoId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('iaasinfo');
+        const { iaasinfoId } = req.params;
+        const iotEntry = await collection.findOne({ _id: new ObjectId(iaasinfoId) });
+
+        if (!iotEntry) {
+            return res.status(404).send('iaasinfo entry not found');
+        }
+
+        res.status(200).json(iotEntry);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// PUT (update) a iot entry by ID
+app.put('/iaasinfo/:iaasinfoId', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('iaasinfo');
+        const { iaasinfoId } = req.params;
+        const iotEntry = req.body;
+        await collection.updateOne({ _id: new ObjectId(iaasinfoId) }, { $set: iotEntry });
+        res.status(200).send('iaasinfo entry updated successfully');
+    } finally {
+        await client.close();
+    }
+});
+
+// DELETE a iot entry by ID
+app.delete('/cloudinfo/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('cloudinfo');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('cloudinfo entry deleted successfully');
+    } finally {
+        await client.close();
+    }
+});
+
+
+
 // GET all iot entries
 app.get('/iotinfo', async (req, res) => {
     try {

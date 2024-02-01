@@ -553,7 +553,7 @@ app.get('/cloud', async (req, res) => {
     try {
         await connectToMongo();
         const db = client.db(dbName);
-        const collection = db.collection('devops');
+        const collection = db.collection('cloud');
         const iotEntries = await collection.find({}).toArray();
         res.status(200).json(iotEntries);
     } catch (error) {

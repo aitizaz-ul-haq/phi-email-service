@@ -846,15 +846,15 @@ app.put('/iaasinfo/:iaasinfoId', async (req, res) => {
 });
 
 // DELETE a iot entry by ID
-app.delete('/cloudinfo/:id', async (req, res) => {
+app.delete('/iaasinfoId/:id', async (req, res) => {
     try {
         await connectToMongo();
         await client.connect();
         const db = client.db(dbName);
-        const collection = db.collection('cloudinfo');
+        const collection = db.collection('iaasinfo');
         const { id } = req.params;
         await collection.deleteOne({ _id: new ObjectId(id) });
-        res.status(200).send('cloudinfo entry deleted successfully');
+        res.status(200).send('iaasinfo entry deleted successfully');
     } finally {
         await client.close();
     }

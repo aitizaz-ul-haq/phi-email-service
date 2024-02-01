@@ -428,8 +428,8 @@ app.get('/saas/:saasId', async (req, res) => {
         await connectToMongo();
         const db = client.db(dbName);
         const collection = db.collection('saas');
-        const { iotId } = req.params;
-        const iotEntry = await collection.findOne({ _id: new ObjectId(iotId) });
+        const { saasId } = req.params;
+        const iotEntry = await collection.findOne({ _id: new ObjectId(saasId) });
 
         if (!iotEntry) {
             return res.status(404).send('saas entry not found');
@@ -447,9 +447,9 @@ app.put('/saas/:saasId', async (req, res) => {
         await client.connect();
         const db = client.db(dbName);
         const collection = db.collection('saas');
-        const { iotId } = req.params;
+        const { saasId } = req.params;
         const iotEntry = req.body;
-        await collection.updateOne({ _id: new ObjectId(iotId) }, { $set: iotEntry });
+        await collection.updateOne({ _id: new ObjectId(saasId) }, { $set: iotEntry });
         res.status(200).send('saas entry updated successfully');
     } finally {
         await client.close();

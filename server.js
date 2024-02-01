@@ -702,10 +702,239 @@ app.delete('/iaas/:id', async (req, res) => {
 });
 
 
-// IOTINFO CRUD Operations
 
-// GET all iotinfo entries
-// IOT CRUD Operations
+
+// GET all iaas entries
+app.get('/gtmpage', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('gtmpage');
+        const iotEntries = await collection.find({}).toArray();
+        res.status(200).json(iotEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// POST a new iot entry
+app.post('/gtmpage', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('gtmpage');
+        const iotEntry = req.body;
+        await collection.insertOne(iotEntry);
+        res.status(201).send('gtmpage entry created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// GET a single iot entry by ID
+app.get('/gtmpage/:gtmpageId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('gtmpage');
+        const { gtmpageId } = req.params;
+        const iotEntry = await collection.findOne({ _id: new ObjectId(gtmpageId) });
+
+        if (!iotEntry) {
+            return res.status(404).send('gtmpage entry not found');
+        }
+
+        res.status(200).json(iotEntry);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// PUT (update) a iot entry by ID
+app.put('/gtmpage/:gtmpageId', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('gtmpage');
+        const { gtmpageId } = req.params;
+        const iotEntry = req.body;
+        await collection.updateOne({ _id: new ObjectId(gtmpageId) }, { $set: iotEntry });
+        res.status(200).send('gtmpage entry updated successfully');
+    } finally {
+        await client.close();
+    }
+});
+
+// DELETE a iot entry by ID
+app.delete('/gtmpage/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('gtmpage');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('gtmpage entry deleted successfully');
+    } finally {
+        await client.close();
+    }
+});
+
+
+// GET all iaas entries
+app.get('/hrpage', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('hr');
+        const iotEntries = await collection.find({}).toArray();
+        res.status(200).json(iotEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// POST a new iot entry
+app.post('/hrpage', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('hr');
+        const iotEntry = req.body;
+        await collection.insertOne(iotEntry);
+        res.status(201).send('hrpage entry created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// GET a single iot entry by ID
+app.get('/hrpage/:hrpageId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('hr');
+        const { hrpageId } = req.params;
+        const iotEntry = await collection.findOne({ _id: new ObjectId(hrpageId) });
+
+        if (!iotEntry) {
+            return res.status(404).send('hrpage entry not found');
+        }
+
+        res.status(200).json(iotEntry);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// PUT (update) a iot entry by ID
+app.put('/hrpage/:hrpageId', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('hr');
+        const { hrpageId } = req.params;
+        const iotEntry = req.body;
+        await collection.updateOne({ _id: new ObjectId(hrpageId) }, { $set: iotEntry });
+        res.status(200).send('hrpage entry updated successfully');
+    } finally {
+        await client.close();
+    }
+});
+
+// DELETE a iot entry by ID
+app.delete('/hrpage/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('hr');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('hrpage entry deleted successfully');
+    } finally {
+        await client.close();
+    }
+});
+
+
+
+// GET all iaas entries
+app.get('/invpage', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('invpage');
+        const iotEntries = await collection.find({}).toArray();
+        res.status(200).json(iotEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// POST a new iot entry
+app.post('/invpage', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('invpage');
+        const iotEntry = req.body;
+        await collection.insertOne(iotEntry);
+        res.status(201).send('invpage entry created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// GET a single iot entry by ID
+app.get('/invpage/:invId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('invpage');
+        const { invId } = req.params;
+        const iotEntry = await collection.findOne({ _id: new ObjectId(invId) });
+
+        if (!iotEntry) {
+            return res.status(404).send('invpage entry not found');
+        }
+
+        res.status(200).json(iotEntry);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// PUT (update) a iot entry by ID
+app.put('/invpage/:hrpageId', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('invpage');
+        const { hrpageId } = req.params;
+        const iotEntry = req.body;
+        await collection.updateOne({ _id: new ObjectId(hrpageId) }, { $set: iotEntry });
+        res.status(200).send('invpage entry updated successfully');
+    } finally {
+        await client.close();
+    }
+});
+
+// DELETE a iot entry by ID
+app.delete('/invpage/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('invpage');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('invpage entry deleted successfully');
+    } finally {
+        await client.close();
+    }
+});
+
 
 // GET all iot entries
 app.get('/cloudinfo', async (req, res) => {

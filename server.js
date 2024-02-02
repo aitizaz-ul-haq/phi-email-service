@@ -11,11 +11,11 @@ const url = 'mongodb+srv://dev_phi:paFB82kF3XD45v70@cluster0.5b3psjj.mongodb.net
 const client = new MongoClient(url);
 const dbName = 'phiconsulting'; 
 // const apiUrl = process.env.API_URL || 'http://localhost:3000';
-const apiUrl = process.env.API_URL || 'http://phi-email-service.vercel.app';
+// const apiUrl = process.env.API_URL || 'http://phi-email-service.vercel.app';
 
 // Middleware
 app.use(cors({
-    origin: '*',
+    origin: 'https://phi-react-website.web.app/',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,

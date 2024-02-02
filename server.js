@@ -10,6 +10,8 @@ const app = express();
 const url = 'mongodb+srv://dev_phi:paFB82kF3XD45v70@cluster0.5b3psjj.mongodb.net/?retryWrites=true&w=majority'; // Replace with your connection string
 const client = new MongoClient(url);
 const dbName = 'phiconsulting'; 
+// const apiUrl = process.env.API_URL || 'http://localhost:3000';
+const apiUrl = process.env.API_URL || 'http://phi-email-service.vercel.app';
 
 // Middleware
 app.use(cors({

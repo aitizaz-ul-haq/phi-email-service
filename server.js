@@ -15,7 +15,7 @@ const dbName = 'phiconsulting';
 // Middleware
 app.use(cors({
 
-    origin: 'https://phi-react-website.web.app/',
+    origin: 'https://phi-react-website.web.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,

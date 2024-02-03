@@ -15,7 +15,7 @@ const dbName = 'phiconsulting';
 // Middleware
 app.use(cors({
 
-    origin: '*',
+    origin: 'https://phi-react-website.web.app/',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,
@@ -73,8 +73,8 @@ app.post('/send-email', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
-  });
+  res.send('Hello World!');
+});
 
 // Login endpoint
 app.post('/login', async (req, res) => {

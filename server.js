@@ -15,7 +15,7 @@ const dbName = 'phiconsulting';
 // Middleware
 app.use(cors({
 
-    origin: 'https://phi-react-website.web.app',
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,
@@ -1566,6 +1566,496 @@ app.delete('/jobs/:id', async (req, res) => {
 });
 
 
+///////////////////////////////////////////////////////////////
+// Banner APIs
+///////////////////////////////////////////////////////////////
+
+
+app.post('/saasban', async (req, res) => {
+    try {
+         await connectToMongo();
+         const db = client.db(dbName);
+        const collection = db.collection('saasban');
+        const saasban = req.body;
+        await collection.insertOne(saasban);
+        res.status(201).send('SaaSban created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Get all SaaSban entries
+app.get('/saasban', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('saasban');
+        const saasbanEntries = await collection.find({}).toArray();
+        res.status(200).json(saasbanEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Get a specific SaaSban entry
+app.get('/saasban/:saasbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('saasban');
+        const { saasbanId } = req.params;
+        const saasban = await collection.findOne({ _id: new ObjectId(saasbanId) });
+
+        if (!saasban) {
+            return res.status(404).send('SaaSban not found');
+        }
+
+        res.status(200).json(saasban);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Update a SaaSban entry
+app.put('/saasban/:saasbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('saasban');
+        const { saasbanId } = req.params;
+        const saasban = req.body;
+        await collection.updateOne({ _id: new ObjectId(saasbanId) }, { $set: saasban });
+        res.status(200).send('SaaSban updated successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+// Delete a SaaSban entry
+app.delete('/saasban/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('saasban');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('SaaSban deleted successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+
+app.post('/iaasban', async (req, res) => {
+    try {
+         await connectToMongo();
+         const db = client.db(dbName);
+        const collection = db.collection('iaasban');
+        const iaasban = req.body;
+        await collection.insertOne(iaasban);
+        res.status(201).send('iaasban created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Get all SaaSban entries
+app.get('/iaasban', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('iaasban');
+        const saasbanEntries = await collection.find({}).toArray();
+        res.status(200).json(saasbanEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Get a specific SaaSban entry
+app.get('/iaasban/:iaasbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('iaasban');
+        const { iaasbanId } = req.params;
+        const saasban = await collection.findOne({ _id: new ObjectId(iaasbanId) });
+
+        if (!saasban) {
+            return res.status(404).send('iaasban not found');
+        }
+
+        res.status(200).json(saasban);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Update a SaaSban entry
+app.put('/iaasban/:iaasbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('iaasban');
+        const { iaasbanId } = req.params;
+        const saasban = req.body;
+        await collection.updateOne({ _id: new ObjectId(iaasbanId) }, { $set: saasban });
+        res.status(200).send('iaasban updated successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+// Delete a SaaSban entry
+app.delete('/iaasban/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('iaasban');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('iaasban deleted successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+
+
+
+app.post('/iotban', async (req, res) => {
+    try {
+         await connectToMongo();
+         const db = client.db(dbName);
+        const collection = db.collection('iotban');
+        const iaasban = req.body;
+        await collection.insertOne(iaasban);
+        res.status(201).send('iotban created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Get all SaaSban entries
+app.get('/iotban', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('iotban');
+        const saasbanEntries = await collection.find({}).toArray();
+        res.status(200).json(saasbanEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Get a specific SaaSban entry
+app.get('/iotban/:iotbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('iotban');
+        const { iotbanId } = req.params;
+        const saasban = await collection.findOne({ _id: new ObjectId(iotbanId) });
+
+        if (!saasban) {
+            return res.status(404).send('iotban not found');
+        }
+
+        res.status(200).json(saasban);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Update a SaaSban entry
+app.put('/iotban/:iotbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('iotban');
+        const { iotbanId } = req.params;
+        const saasban = req.body;
+        await collection.updateOne({ _id: new ObjectId(iotbanId) }, { $set: saasban });
+        res.status(200).send('iotban updated successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+// Delete a SaaSban entry
+app.delete('/iotban/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('iotban');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('iotban deleted successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+
+
+
+
+app.post('/fintban', async (req, res) => {
+    try {
+         await connectToMongo();
+         const db = client.db(dbName);
+        const collection = db.collection('fintban');
+        const iaasban = req.body;
+        await collection.insertOne(iaasban);
+        res.status(201).send('fintban created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Get all SaaSban entries
+app.get('/fintban', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('fintban');
+        const saasbanEntries = await collection.find({}).toArray();
+        res.status(200).json(saasbanEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Get a specific SaaSban entry
+app.get('/fintban/:fintbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('fintban');
+        const { fintbanId } = req.params;
+        const saasban = await collection.findOne({ _id: new ObjectId(fintbanId) });
+
+        if (!saasban) {
+            return res.status(404).send('fintban not found');
+        }
+
+        res.status(200).json(saasban);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Update a SaaSban entry
+app.put('/fintban/:fintbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('fintban');
+        const { fintbanId } = req.params;
+        const saasban = req.body;
+        await collection.updateOne({ _id: new ObjectId(fintbanId) }, { $set: saasban });
+        res.status(200).send('fintban updated successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+// Delete a SaaSban entry
+app.delete('/fintban/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('fintban');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('fintban deleted successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+
+app.post('/devban', async (req, res) => {
+    try {
+         await connectToMongo();
+         const db = client.db(dbName);
+        const collection = db.collection('devban');
+        const iaasban = req.body;
+        await collection.insertOne(iaasban);
+        res.status(201).send('devban created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Get all SaaSban entries
+app.get('/devban', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('devban');
+        const saasbanEntries = await collection.find({}).toArray();
+        res.status(200).json(saasbanEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Get a specific SaaSban entry
+app.get('/devban/:devbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('devban');
+        const { devbanId } = req.params;
+        const saasban = await collection.findOne({ _id: new ObjectId(devbanId) });
+
+        if (!saasban) {
+            return res.status(404).send('devban not found');
+        }
+
+        res.status(200).json(saasban);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+// Update a SaaSban entry
+app.put('/devban/:devbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('devban');
+        const { devbanId } = req.params;
+        const saasban = req.body;
+        await collection.updateOne({ _id: new ObjectId(devbanId) }, { $set: saasban });
+        res.status(200).send('fintban updated successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+// Delete a SaaSban entry
+app.delete('/devban/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('devban');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('devban deleted successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+
+// Get all SaaSban entries
+app.get('/cloudban', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('cloudban');
+        const saasbanEntries = await collection.find({}).toArray();
+        res.status(200).json(saasbanEntries);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+
+// Get a specific SaaSban entry
+app.get('/cloudban/:cloudbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('cloudban');
+        const { cloudbanId } = req.params;
+        const saasban = await collection.findOne({ _id: new ObjectId(cloudbanId) });
+
+        if (!saasban) {
+            return res.status(404).send('cloudban not found');
+        }
+
+        res.status(200).json(saasban);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+app.post('/cloudban', async (req, res) => {
+    try {
+         await connectToMongo();
+         const db = client.db(dbName);
+        const collection = db.collection('cloudban');
+        const iaasban = req.body;
+        await collection.insertOne(iaasban);
+        res.status(201).send('cloudban created successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+
+// Update a SaaSban entry
+app.put('/cloudban/:cloudbanId', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('cloudban');
+        const { cloudbanId } = req.params;
+        const saasban = req.body;
+        await collection.updateOne({ _id: new ObjectId(cloudbanId) }, { $set: saasban });
+        res.status(200).send('cloudban updated successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
+
+// Delete a SaaSban entry
+app.delete('/cloudban/:id', async (req, res) => {
+    try {
+        await connectToMongo();
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection('cloudban');
+        const { id } = req.params;
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        res.status(200).send('cloudban deleted successfully');
+    } catch (error) {
+        res.status(500).send(error.toString());
+    } finally {
+        await client.close();
+    }
+});
 // Server setup
 const port = 3000;
 app.listen(port, () => {

@@ -2057,7 +2057,7 @@ app.delete('/cloudban/:id', async (req, res) => {
     }
 });
 
-
+// -----------------------------------cards sections---------------------
 
 // GET all iot entries
 app.get('/saascards', async (req, res) => {

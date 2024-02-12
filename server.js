@@ -1,7 +1,9 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 const cors = require('cors');
+const fs = require('fs');
 const { MongoClient, ObjectId } = require('mongodb');
 
 const app = express();
@@ -22,6 +24,17 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Multer configuration
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname); // Use the original filename
+    }
+});
+const upload = multer({ storage: storage });
 
 // Connect to MongoDB
 async function connectToMongo() {
@@ -45,7 +58,7 @@ app.post('/send-email', (req, res) => {
         service: 'gmail',
         auth: {
             user: 'atz.softprgmr@gmail.com', // replace with your Gmail address
-            pass: 'Sadibhi3330027'  // replace with your Gmail password or an app-specific password
+            pass: 'jehg fgfw fzhl thkv'  // replace with your Gmail password or an app-specific password
         }
     });
 
@@ -71,6 +84,141 @@ app.post('/send-email', (req, res) => {
         res.status(200).send('Email sent successfully!');
     });
 });
+
+
+
+
+// Email Service
+// working but file corrupted Email Service
+// app.post('/submit-application', upload.single('resume'), async (req, res) => {
+//     try {
+//         const { fullName, email, contactNo, address, coverLetter } = req.body;
+//         const resume = req.file;
+
+//         // Ensure all required form fields are present
+//         if (!fullName || !email || !contactNo || !address || !coverLetter || !resume) {
+//             return res.status(400).send('Incomplete form data');
+//         }
+
+//         // Create a Nodemailer transporter
+//         const transporter = nodemailer.createTransport({
+//             service: 'gmail',
+//             auth: {
+//                 user: 'atz.softprgmr@gmail.com',
+//                 pass: 'jehg fgfw fzhl thkv'
+//             }
+//         });
+
+//         // Configure the email
+//         const mailOptions = {
+//             from: 'your-gmail-address@gmail.com',
+//             to: 'aitaizaz.haq@phi-verse.com',
+//             subject: 'Job Application Submission',
+//             html: `
+//                 <p>Full Name: ${fullName}</p>
+//                 <p>Email: ${email}</p>
+//                 <p>Contact No: ${contactNo}</p>
+//                 <p>Address: ${address}</p>
+//                 <p>Cover Letter: ${coverLetter}</p>
+//             `,
+//             attachments: [
+//                 {
+//                     filename: resume.originalname,
+//                     content: resume.buffer // Use the buffer data from multer
+//                 }
+//             ]
+//         };
+
+//         // Send the email
+//         transporter.sendMail(mailOptions, (error, info) => {
+//             if (error) {
+//                 console.error('Error sending email:', error);
+//                 return res.status(500).send('Error submitting application');
+//             }
+//             // Delete the file from the uploads folder after sending the email
+//             fs.unlink(resume.path, (err) => {
+//                 if (err) {
+//                     console.error('Error deleting file:', err);
+//                 } else {
+//                     console.log('File deleted successfully');
+//                 }
+//             });
+//             res.status(200).send('Application submitted successfully!');
+//         });
+//     } catch (error) {
+//         console.error('Error submitting application:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// });
+
+
+// Email Service
+app.post('/submit-application', upload.single('resume'), async (req, res) => {
+    try {
+        const { fullName, email, contactNo, address, coverLetter } = req.body;
+        const resume = req.file;
+
+        // Ensure all required form fields are present
+        if (!fullName || !email || !contactNo || !address || !coverLetter || !resume) {
+            return res.status(400).send('Incomplete form data');
+        }
+
+        // Create a Nodemailer transporter
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'atz.softprgmr@gmail.com',
+                pass: 'jehg fgfw fzhl thkv'
+            }
+        });
+
+        // Read the file from disk
+        const fileData = fs.readFileSync(resume.path);
+
+        // Configure the email
+        const mailOptions = {
+            from: 'your-gmail-address@gmail.com',
+            to: 'aitaizaz.haq@phi-verse.com',
+            subject: 'Job Application Submission',
+            html: `
+                <p>Full Name: ${fullName}</p>
+                <p>Email: ${email}</p>
+                <p>Contact No: ${contactNo}</p>
+                <p>Address: ${address}</p>
+                <p>Cover Letter: ${coverLetter}</p>
+            `,
+            attachments: [
+                {
+                    filename: resume.originalname,
+                    content: fileData // Attach file data read from disk
+                }
+            ]
+        };
+
+        // Send the email
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error);
+                return res.status(500).send('Error submitting application');
+            }
+            // Delete the file from the uploads folder after sending the email
+            fs.unlink(resume.path, (err) => {
+                if (err) {
+                    console.error('Error deleting file:', err);
+                } else {
+                    console.log('File deleted successfully');
+                }
+            });
+            res.status(200).send('Application submitted successfully!');
+        });
+    } catch (error) {
+        console.error('Error submitting application:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

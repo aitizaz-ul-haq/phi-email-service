@@ -1610,6 +1610,26 @@ app.get('/cases/:caseId', async (req, res) => {
     }
 });
 
+// Get a specific article by company name
+app.get('/cases/:companyName', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('cases');
+        const { companyName } = req.params;
+        const cas = await collection.findOne({ companyName: companyName });
+
+        if (!cas) {
+            return res.status(404).send('Case not found');
+        }
+
+        res.status(200).json(cas);
+    } catch (error) {
+        console.error('Error fetching case study by company name:', error);
+        res.status(500).send(error.toString());
+    }
+});
+
 // Update an article
 app.put('/cases/:caseId', async (req, res) => {
     try {

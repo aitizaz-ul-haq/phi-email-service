@@ -289,6 +289,24 @@ app.get('/blogs/:blogId', async (req, res) => {
     }
 });
 
+app.get('/blogs/:urlName', async (req, res) => {
+    try {
+        await connectToMongo();
+        const db = client.db(dbName);
+        const collection = db.collection('blogs');
+        const { urlName } = req.params;
+        const blog = await collection.findOne({ _id: new ObjectId(urlName) });
+
+        if (!blog) {
+            return res.status(404).send('Blog not found');
+        }
+
+        res.status(200).json(blog);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
 
 app.put('/blogs/:blogId', async (req, res) => {
     try {

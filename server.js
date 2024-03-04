@@ -8,6 +8,8 @@ const { MongoClient, ObjectId } = require('mongodb');
 
 const app = express();
 
+app.use(require('prerender-node').set('prerenderToken', 'MuWSAjv6ZttHqsrBlqP4'));
+
 // MongoDB setup
 const url = 'mongodb+srv://dev_phi:paFB82kF3XD45v70@cluster0.5b3psjj.mongodb.net/?retryWrites=true&w=majority'; // Replace with your connection string
 const client = new MongoClient(url);

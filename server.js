@@ -3,22 +3,96 @@ const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const cors = require('cors');
-const fs = require('fs');
+const axios = require('axios');
 const { MongoClient, ObjectId } = require('mongodb');
-
+const fs = require('fs');
 const app = express();
+require('dotenv').config();
+
 
 // app.use(require('prerender-node').set('prerenderToken', 'MuWSAjv6ZttHqsrBlqP4'));
+
+function isBot(userAgent) {
+    const bots = [
+    'Googlebot', // Google's crawler
+    'Bingbot', // Bing's crawler
+    'YandexBot', // Yandex's crawler
+    'Applebot', // Apple's Siri and Spotlight Suggestions crawler
+    'DuckDuckBot', // DuckDuckGo's crawler
+    'Baiduspider', // Baidu's crawler
+    'Sogou Spider', // Sogou's crawler
+    'facebookexternalhit', // Facebook's crawler for link previews
+    'facebot', // Another Facebook crawler variant
+    'Twitterbot', // Twitter's crawler for card previews
+    'LinkedInBot', // LinkedIn's crawler
+    // LinkedInBot variations (be cautious with general HTTP client strings)
+    'Mozilla/5.0; Jakarta Commons-HttpClient/3.1', // Specific user agent string, generally for HTTP clients
+    'Mozilla/5.0; Jakarta Commons-HttpClient/4.3', // As above
+    'Mozilla/5.0; Apache-HttpClient', // As above, commonly used by various clients
+    'Exabot', // Exalead's crawler
+    'Slurp', // Yahoo's crawler
+    'CCBot', // Common Crawl's web crawler
+    'GoogleOther', // Google's internal use crawler
+    'Google-InspectionTool', // Google Search Console's crawler
+    'Swiftbot', // Swiftype’s web crawler, not specifically mentioned in the second list but included for completeness
+    'AhrefsBot', // Ahrefs' crawler, important for SEO and link indexing
+    'SemrushBot', // SEMrush's crawler, used for SEO and site analysis
+    'Rogerbot', // Moz's crawler, gathers data for Moz's SEO tools and services
+    'Screaming Frog', // SEO tool crawler, used by the Screaming Frog SEO Spider tool
+    'Deepcrawl', // Web crawler for site analysis, helps in auditing and optimizing website structure
+    ];
+    return bots.some(bot => userAgent.toLowerCase().includes(bot.toLowerCase()));
+}
+
+// Function to generate the SSR page with meta tags
+function generateMetaPage(blogData) {
+    return `
+          <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${blogData.title ? `${blogData.title} | Your Blog Name` : 'Your Blog Name'}</title>
+            <meta name="description" content="${blogData.summary || 'Default summary about your blog'}">
+      
+            <link rel="canonical" href="https://phiconsulting.org/blog/${blogData.urlName}">
+
+            <meta property="og:type" content="article">
+            <meta property="og:title" content="${blogData.title || 'Your Blog Title'}">
+            <meta property="og:description" content="${blogData.summary || 'A brief summary of your blog'}">
+            <meta property="og:image" content="${blogData.imageUrl || 'default_image_url'}">
+            <meta property="og:url" content="https://phiconsulting.org/blog/${blogData.urlName}">
+            <meta property="og:site_name" content="Your Blog or Company Name">
+
+            <meta name="twitter:card" content="summary_large_image">
+            <meta name="twitter:title" content="${blogData.title || 'Your Blog Title'}">
+            <meta name="twitter:description" content="${blogData.summary || 'A brief summary of your blog'}">
+            <meta name="twitter:image" content="${blogData.imageUrl || 'default_image_url'}">
+
+            <meta property="og:image:width" content="1200">
+            <meta property="og:image:height" content="630">
+            <meta property="og:image:alt" content="A descriptive alternate text for your image">
+            <meta name="twitter:site" content="@YourTwitterHandle">
+            <meta name="twitter:creator" content="@AuthorTwitterHandle">
+        </head>
+        <body>
+            <p>Loading...</p>
+            <!-- Minimal body content since this page is for bots only -->
+        </body>
+        </html>
+    `;
+}
+
 
 // MongoDB setup
 const url = 'mongodb+srv://dev_phi:paFB82kF3XD45v70@cluster0.5b3psjj.mongodb.net/?retryWrites=true&w=majority'; // Replace with your connection string
 const client = new MongoClient(url);
 const dbName = 'phiconsulting'; 
-    
+// const apiUrl = process.env.API_URL || 'http://localhost:3000';
+// const apiUrl = process.env.API_URL || 'http://phi-email-service.vercel.app';
 
 // Middleware
 app.use(cors({
-
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
@@ -67,7 +141,7 @@ app.post('/send-email', (req, res) => {
     // Configure the email
     const mailOptions = {
         from: 'atz.softprgmr@gmail.com',  // replace with your Gmail address
-        to: 'aitaizaz.haq@phi-verse.com', // replace with the recipient's email address
+        to: 'raza@phi.consulting', // replace with the recipient's email address
         subject: 'Contact Form Submission',
         html: `
             <p>Name: ${name}</p>
@@ -154,6 +228,7 @@ app.post('/send-email', (req, res) => {
 // });
 
 
+
 // Email Service
 app.post('/submit-application', upload.single('resume'), async (req, res) => {
     try {
@@ -180,7 +255,7 @@ app.post('/submit-application', upload.single('resume'), async (req, res) => {
         // Configure the email
         const mailOptions = {
             from: 'your-gmail-address@gmail.com',
-            to: 'aitaizaz.haq@phi-verse.com',
+            to: 'raza@phi.consulting',
             subject: 'Job Application Submission',
             html: `
                 <p>Full Name: ${fullName}</p>
@@ -219,13 +294,6 @@ app.post('/submit-application', upload.single('resume'), async (req, res) => {
     }
 });
 
-
-
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
 // Login endpoint
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
@@ -241,7 +309,9 @@ app.post('/login', async (req, res) => {
     res.status(200).send({ token: 'your-generated-token' });
 });
 
-
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+  });
 
 // const newUser = { username: "admin", password: "admin" }; // Use hashed passwords in production
 // db.collection('users').insertOne(newUser);
@@ -291,24 +361,63 @@ app.get('/blogs/:blogId', async (req, res) => {
     }
 });
 
-app.get('/blogs/:urlName', async (req, res) => {
+app.get('/blog/:urlName', async (req, res) => {
+    const userAgent = req.headers['user-agent'];
+
+    if (isBot(userAgent)) {
+        // Detected a bot, serve the SSR page with meta tags
+        try {
+            await client.connect();
+            const db = client.db(dbName);
+            const collection = db.collection('blogs');
+            const blog = await collection.findOne({ urlName: req.params.urlName });
+
+            if (!blog) {
+                return res.status(404).send('Blog not found');
+            }
+
+            const metaPage = generateMetaPage(blog);
+            res.send(metaPage);
+        } catch (error) {
+            console.error('Error generating SSR page for bot:', error);
+            res.status(500).send('Error serving content');
+        } finally {
+            await client.close();
+        }
+    } else {
+        // Redirect user to the React app
+        const reactAppUrl = `https://phiconsulting.org/blog/${req.params.urlName}`;
+        res.redirect(reactAppUrl);
+    }
+});
+
+
+
+
+
+
+app.get('/blogs/name/:urlName', async (req, res) => {
     try {
-        await connectToMongo();
+        await client.connect(); // Ensure MongoDB connection is established
         const db = client.db(dbName);
         const collection = db.collection('blogs');
         const { urlName } = req.params;
-        const blog = await collection.findOne({ _id: new ObjectId(urlName) });
-
+        
+        // Directly query the document by urlName
+        const blog = await collection.findOne({ urlName: urlName });
+        
         if (!blog) {
             return res.status(404).send('Blog not found');
         }
 
         res.status(200).json(blog);
     } catch (error) {
-        res.status(500).send(error.toString());
+        console.error('Error fetching blog by urlName:', error);
+        res.status(500).send('Error fetching blog');
+    } finally {
+        await client.close(); // Optionally close the connection, depending on your app's design
     }
 });
-
 
 app.put('/blogs/:blogId', async (req, res) => {
     try {
@@ -1631,13 +1740,13 @@ app.get('/cases/:caseId', async (req, res) => {
 });
 
 // Get a specific article by company name
-app.get('/cases/:companyName', async (req, res) => {
+app.get('/cases/name/:companyName', async (req, res) => {
     try {
         await connectToMongo();
         const db = client.db(dbName);
         const collection = db.collection('cases');
         const { companyName } = req.params;
-        const cas = await collection.findOne({ companyName: companyName });
+        const cas = await collection.findOne({ imageone: companyName });
 
         if (!cas) {
             return res.status(404).send('Case not found');
@@ -1645,7 +1754,7 @@ app.get('/cases/:companyName', async (req, res) => {
 
         res.status(200).json(cas);
     } catch (error) {
-        console.error('Error fetching case study by company name:', error);
+      console.error('Error fetching case study by company name:', error);
         res.status(500).send(error.toString());
     }
 });
@@ -2632,7 +2741,6 @@ app.delete('/fincards/:id', async (req, res) => {
     }
 });
 
-
 // GET all iot entries
 app.get('/devcards', async (req, res) => {
     try {
@@ -2708,7 +2816,6 @@ app.delete('/devcards/:id', async (req, res) => {
         await client.close();
     }
 });
-
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -3102,7 +3209,6 @@ app.delete('/valuecreationpage/:id', async (req, res) => {
         await client.close();
     }
 });
-
 
 
 // GET all iot entries

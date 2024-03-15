@@ -141,7 +141,7 @@ app.post('/send-email', (req, res) => {
     // Configure the email
     const mailOptions = {
         from: 'atz.softprgmr@gmail.com',  // replace with your Gmail address
-        to: 'raza@phi.consulting', // replace with the recipient's email address
+        to: 'marketing@phi.consulting ', // replace with the recipient's email address
         subject: 'Contact Form Submission',
         html: `
             <p>Name: ${name}</p>
@@ -255,7 +255,7 @@ app.post('/submit-application', upload.single('resume'), async (req, res) => {
         // Configure the email
         const mailOptions = {
             from: 'your-gmail-address@gmail.com',
-            to: 'raza@phi.consulting',
+            to: 'hr@phi.consulting',
             subject: 'Job Application Submission',
             html: `
                 <p>Full Name: ${fullName}</p>
